@@ -1,0 +1,54 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  name: default
+
+stages:
+- stage: TerraformValidate
+  displayName: Terraform Validate Stage
+
+  jobs:
+  - job: TerraformValidateJob
+    displayName: Terraform Validate Job
+
+    steps:
+    - checkout: self
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish Artifacts
+      inputs:
+        targetPath: $(System.DefaultWorkingDirectory)/terraform-manifests
+        artifact: terraform-manifests-out
+        publishLocation: pipeline
+
+    - script: terraform version
+      displayName: Check Terraform Version
+
+    - task: AzureCLI@2
+      displayName: Azure Login
+      inputs:
+        azureSubscription: terraform-aks-azurerm-svc-con
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az account show
+
+    - script: |
+        terraform init \
+        -backend-config="resource_group_name=terraform-storage-rg" \
+        -backend-config="storage_account_name=goginenistorage" \
+        -backend-config="container_name=tfstatefiles" \
+        -backend-config="key=aks-base.tfstate"
+      displayName: Terraform Init
+      workingDirectory: $(System.DefaultWorkingDirectory)/terraform-manifests
+
+    - script: |
+        terraform validate
+      displayName: Terraform Validate
+      workingDirectory: $(System.DefaultWorkingDirectory)/terraform-manifests
