@@ -42,7 +42,7 @@ stages:
     - script: |
         terraform init \
         -backend-config="resource_group_name=terraform-storage-rg" \
-        -backend-config="storage_account_name=terraformstatexlrwdrzs" \
+        -backend-config="storage_account_name=goginenistorage" \
         -backend-config="container_name=tfstatefiles" \
         -backend-config="key=aks-base.tfstate"
       displayName: Terraform Init
