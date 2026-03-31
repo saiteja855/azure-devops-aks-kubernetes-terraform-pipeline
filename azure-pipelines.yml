@@ -44,7 +44,7 @@ stages:
 
           terraform init -reconfigure \
             -backend-config="resource_group_name=terraform-storage-rg" \
-            -backend-config="storage_account_name=goginenigirishstorage" \
+            -backend-config="storage_account_name=goginenistorage" \
             -backend-config="container_name=tfstatefiles" \
             -backend-config="key=aks-$(DEV_ENVIRONMENT).tfstate"
 
