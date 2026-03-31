@@ -82,7 +82,7 @@ linux_profile {
 
 # Network Profile
 network_profile {
-  load_balancer_sku = "basic"
+  load_balancer_sku = "standard"
   network_plugin = "azure"
 }
 
